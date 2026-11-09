@@ -1,0 +1,10 @@
+# Tested with Python 3.12.3. Install a CPU/CUDA build of torch for your hardware.
+torch==2.11.0
+torchvision==0.26.0
+numpy==2.4.3
+scipy==1.17.1
+scikit-learn==1.8.0
+scikit-image==0.26.0
+opencv-python-headless==4.13.0.92
+albumentations==2.0.8
+tqdm==4.67.3

@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+*.pth
+*.pt
+/data/
+/classification_dataset/
+/segmentation_supplement/
+/predictions/
+predictions.csv
+training_output_*/
+predictions_*/
+predictions_*.csv
