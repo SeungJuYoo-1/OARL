@@ -83,6 +83,16 @@ between wells. Column definitions are in [metadata/README.md](metadata/README.md
 
 ## Inference
 
+For an interactive example, open [examples/inference.ipynb](examples/inference.ipynb).
+It displays an ODT tomogram, organelle probability maps and the nine crop scores
+used for classification, then saves the predictions. After preparing the data
+and weights above, run:
+
+```bash
+python -m pip install -r requirements-notebooks.txt
+python -m jupyter lab examples/inference.ipynb
+```
+
 Run on one held-out classification tomogram:
 
 ```bash
