@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the associated paper below."
+type: software
+title: "OARL-NET: organelle-aware representation learning from optical diffraction tomography"
+authors:
+  - family-names: Yoo
+    given-names: SeungJu
+repository-code: "https://github.com/SeungJuYoo-1/OARL"
+url: "https://github.com/SeungJuYoo-1/OARL"
+version: 1.0.0
+preferred-citation:
+  type: article
+  title: "Organelle-Aware Representation Learning Enables Label-Free Detection of Mitochondrial Perturbation in Live Human Neurons"
+  authors:
+    - family-names: Yoo
+      given-names: SeungJu
+    - family-names: Yang
+      given-names: Eunjin
+    - family-names: Kim
+      given-names: Jeonghyun
+    - family-names: Kim
+      given-names: Seo-Hyun
+    - family-names: Park
+      given-names: Hoewon
+    - family-names: Kim
+      given-names: Daesoo
+    - family-names: Yoon
+      given-names: Ki-Jun
+    - family-names: Choi
+      given-names: Minee L.
+  journal: Smart Medicine
+  notes: "Accepted for publication."

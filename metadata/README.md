@@ -13,8 +13,8 @@ directory supplied to the command.
 | `plate` | Opaque plate identifier |
 | `well` | Opaque physical-well identifier, nested within a plate |
 | `session` | Opaque acquisition-session identifier |
-| `seg_split` | Original segmentation assignment: train, val or test |
-| `cls_split` | Original classification assignment; blank for the supplement |
+| `seg_split` | Segmentation assignment: train, val or test |
+| `cls_split` | Classification assignment; blank for the supplement |
 
 | Task | Train | Validation | Test | Total |
 |---|---:|---:|---:|---:|
@@ -23,8 +23,7 @@ directory supplied to the command.
 
 These are tomogram-level assignments made before cropping. The two tasks were
 split independently; a classification-test tomogram can belong to segmentation
-training or validation. The manifest records the original models' splits, not
-the later well-disjoint validation protocol.
+training or validation. Wells can also span multiple partitions.
 
 The fluorescence channel mapping is in `DataConfig.fl_channel_files`:
 `0_0.tif` nucleus, `1_0.tif` lysosome and `2_0.tif` mitochondria. Confirm this
