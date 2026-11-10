@@ -11,7 +11,7 @@ Daesoo Kim, Ki-Jun Yoon, and Minee L. Choi
 Accepted for publication in *Smart Medicine*. \*Equal contribution.
 
 [Preprint](https://doi.org/10.1101/2025.10.12.681848) ·
-[Data preview](https://doi.org/10.5281/zenodo.17115497) ·
+[Data](https://doi.org/10.5281/zenodo.24082917) ·
 [Example notebook](examples/inference.ipynb) ·
 [Citation](#citation)
 
@@ -47,14 +47,13 @@ from a CUDA GPU.
 
 ## Data and model weights
 
-The [Zenodo record](https://doi.org/10.5281/zenodo.17115497) contains a dataset
-preview. The commands below use the full archives matching the supplied
-[tomogram manifest](metadata/tomograms.csv).
+The datasets are available on [Zenodo](https://doi.org/10.5281/zenodo.24082917).
+The two archives match the supplied [tomogram manifest](metadata/tomograms.csv).
 
-| Resource | Contents | Availability |
+| Resource | Contents | Download |
 |---|---|---|
-| Classification dataset | 1,018 tomograms: control and three ETC inhibitor conditions | Full archive pending |
-| Segmentation supplement | 604 additional tomograms for organelle segmentation | Full archive pending |
+| Classification dataset | 1,018 tomograms: control and three ETC inhibitor conditions | [11.37 GB](https://zenodo.org/api/records/24082917/files/classification_dataset.zip/content) |
+| Segmentation supplement | 604 additional tomograms for organelle segmentation | [7.21 GB](https://zenodo.org/api/records/24082917/files/segmentation_supplement.zip/content) |
 | Model weights | `segmentation.pth` and `classification.pth` | [Download weights](https://github.com/SeungJuYoo-1/OARL/releases/download/v1.0.0/oarl-net-weights.zip) |
 
 Together, the two datasets contain 1,622 tomograms. Data and weights are
