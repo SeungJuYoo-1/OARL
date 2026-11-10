@@ -55,7 +55,7 @@ preview. The commands below use the full archives matching the supplied
 |---|---|---|
 | Classification dataset | 1,018 tomograms: control and three ETC inhibitor conditions | Full archive pending |
 | Segmentation supplement | 604 additional tomograms for organelle segmentation | Full archive pending |
-| Model weights | `segmentation.pth` and `classification.pth` | Download links pending |
+| Model weights | `segmentation.pth` and `classification.pth` | [Download weights](https://github.com/SeungJuYoo-1/OARL/releases/download/v1.0.0/oarl-net-weights.zip) |
 
 Together, the two datasets contain 1,622 tomograms. Data and weights are
 distributed separately from the source code. Use the following layout:
@@ -82,7 +82,9 @@ scaling and fluorescence channels. [Manifest documentation](metadata/README.md)
 describes the labels, groups and split assignments.
 [Checkpoint documentation](checkpoints/README.md) lists file sizes and checksums.
 
-After placing both weights in `checkpoints/`, check that the models load and run:
+Extract `oarl-net-weights.zip` from the directory containing the cloned `OARL/`
+folder. The archive places both weights in `OARL/checkpoints/`. From `OARL/`,
+check that the models load and run:
 
 ```bash
 python smoke_test.py

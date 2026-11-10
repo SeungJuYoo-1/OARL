@@ -1,6 +1,8 @@
 # Model weights
 
-Place these files in this directory. Download links are pending.
+Download [oarl-net-weights.zip](https://github.com/SeungJuYoo-1/OARL/releases/download/v1.0.0/oarl-net-weights.zip)
+and extract it from the directory containing the cloned `OARL/` folder.
+The archive places these files in `OARL/checkpoints/`.
 
 | File | Size | Saved epoch |
 |---|---:|---:|
