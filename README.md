@@ -12,20 +12,32 @@ Accepted for publication in *Smart Medicine*. \*Equal contribution.
 
 [Preprint](https://doi.org/10.1101/2025.10.12.681848) ·
 [Data](https://doi.org/10.5281/zenodo.24082917) ·
-[Example notebook](examples/inference.ipynb) ·
+[Examples](#example-notebooks) ·
 [Citation](#citation)
 
-OARL-NET predicts nucleus, lysosome and mitochondria masks from optical diffraction
-tomograms. A classifier trained on the segmentation encoder distinguishes control
-neurons from neurons treated with ETC inhibitors. Fluorescence provides the
-segmentation targets during training; inference uses ODT alone.
+OARL-NET learns organelle representations from optical diffraction tomography
+(ODT) to detect mitochondrial perturbation in live neurons. Two classification
+approaches distinguish control neurons from neurons treated with ETC inhibitors:
+a neural network using learned encoder features, and logistic regression using
+descriptors of predicted organelle masks. Fluorescence supplies segmentation
+targets during training; both classifiers use ODT alone at inference.
 
-This repository provides the segmentation and neural classification models,
-training and inference scripts, dataset split metadata, and an example notebook.
+| Application | Workflow | Example |
+|---|---|---|
+| Neural-network classification | ODT → OARL encoder → neural classifier | [Notebook](examples/classification_neural_network.ipynb) |
+| Logistic-regression classification | ODT → organelle masks → 30 descriptors → logistic classifier | [Notebook](examples/classification_logistic_regression.ipynb) |
+| Organelle segmentation | ODT → nucleus, lysosome and mitochondria maps | [Notebook](examples/inference.ipynb) |
 
-![ODT input and predicted nucleus, lysosome and mitochondria probability maps](docs/images/segmentation_example.png)
+![Control and ETC-treated ODT examples with neural-network and logistic-regression crop predictions](docs/images/classification_example.png)
 
-ODT input and organelle predictions from the [example notebook](examples/inference.ipynb).
+The classification notebooks use the same two test tomograms: the first control
+and the first ETC-treated sample in manifest order. Bars show crop probabilities;
+the titles give the tomogram predictions. These examples illustrate inference.
+See [classification methods and feature definitions](docs/classification.md)
+for the two models and their aggregation rules.
+
+This repository includes model weights, training and inference scripts, dataset
+split metadata, and notebooks with saved example outputs.
 
 ## Installation
 
@@ -55,16 +67,19 @@ The two archives match the supplied [tomogram manifest](metadata/tomograms.csv).
 | Classification dataset | 1,018 tomograms: control and three ETC inhibitor conditions | [11.37 GB](https://zenodo.org/api/records/24082917/files/classification_dataset.zip/content) |
 | Segmentation supplement | 604 additional tomograms for organelle segmentation | [7.21 GB](https://zenodo.org/api/records/24082917/files/segmentation_supplement.zip/content) |
 | Model weights | `segmentation.pth` and `classification.pth` | [Download weights](https://github.com/SeungJuYoo-1/OARL/releases/download/v1.0.0/oarl-net-weights.zip) |
+| Logistic classifier | Standardization parameters, 30 coefficients and intercept | [Included JSON](checkpoints/logistic_regression.json) |
 
-Together, the two datasets contain 1,622 tomograms. Data and weights are
-distributed separately from the source code. Use the following layout:
+Together, the two datasets contain 1,622 tomograms. Data and PyTorch weights are
+distributed separately from the source code; the small logistic model is included
+in the repository. Use the following layout:
 
 ```text
 OARL/
     checkpoints/
         segmentation.pth
         classification.pth
-    examples/inference.ipynb
+        logistic_regression.json
+    examples/
     metadata/tomograms.csv
     oarl_net/
 classification_dataset/
@@ -89,24 +104,31 @@ check that the models load and run:
 python smoke_test.py
 ```
 
-## Example notebook
+## Example notebooks
 
-[examples/inference.ipynb](examples/inference.ipynb) walks through one tomogram:
-loading the ODT input, predicting organelle maps, classifying nine crops, and
-saving the results. It includes output plots that can be viewed on GitHub.
-To run it locally after preparing the classification dataset and weights:
+All three notebooks include output plots that can be viewed on GitHub.
+
+| Notebook | Contents | Required weights |
+|---|---|---|
+| [Neural-network classification](examples/classification_neural_network.ipynb) | Load two tomograms, predict nine crops per tomogram, combine votes and save predictions | `classification.pth` |
+| [Logistic-regression classification](examples/classification_logistic_regression.ipynb) | Predict masks, extract 30 descriptors, apply the logistic model, inspect coefficients and save predictions/features | `segmentation.pth` and the included `logistic_regression.json` |
+| [Segmentation and inference](examples/inference.ipynb) | Predict full-field organelle maps and a neural classification for one tomogram | Both `.pth` files |
+
+After preparing the classification dataset and weights, install the notebook
+dependencies and open the examples:
 
 ```bash
 python -m pip install -r requirements-notebooks.txt
-python -m jupyter lab examples/inference.ipynb
+python -m jupyter lab examples/
 ```
 
-Set `DATA_DIR` in the notebook to your dataset location. The notebook uses CUDA
-when available and otherwise runs on CPU.
+Set `DATA_DIR` in each notebook to your dataset location. The notebooks use CUDA
+when available and otherwise run on CPU. The segmentation supplement is not
+needed for these examples.
 
 ## Command-line inference
 
-Classify one tomogram from the classification test split:
+Classify one tomogram from the classification test split with the neural network:
 
 ```bash
 python predict_classification.py \
@@ -120,6 +142,20 @@ least five of the nine crops have probability above 0.5; otherwise it is 0
 (control). `tomogram_probability` is the mean of the nine crop probabilities,
 used as a continuous score for ROC analysis. `--threshold` changes the crop
 probability threshold used in the vote.
+
+Classify one tomogram with logistic regression on predicted-mask descriptors:
+
+```bash
+python predict_logistic_regression.py \
+    --data-dir ../classification_dataset \
+    --split test --limit 1 \
+    --output predictions/logistic_regression.csv
+```
+
+This script loads `segmentation.pth` to predict the organelle masks and
+`logistic_regression.json` to classify their descriptors. Its CSV has the same
+columns as the neural classifier output. The logistic classifier assigns class 1
+when the **mean** of the nine crop probabilities exceeds 0.5.
 
 Predict organelle maps for one tomogram from the segmentation test split:
 
@@ -135,10 +171,11 @@ Each output `.npz` contains `probabilities`, a `(3, 741, 741)` float16 array in
 nucleus, lysosome, mitochondria order. Predictions from overlapping 224 x 224
 tiles are averaged. Threshold the maps at 0.5 to obtain binary masks.
 
-Remove `--limit 1` to process the selected split. Both scripts also accept
-`--split all`, `--checkpoint PATH` and `--device cpu`. For segmentation,
-`--batch-size` controls the number of tiles processed together; reduce it if
-memory is limited. Use `--help` to see all options.
+Remove `--limit 1` to process the selected split. All three scripts also accept
+`--split all`, `--checkpoint PATH` and `--device cpu`. For segmentation and
+logistic regression, `--batch-size` controls the number of crops or tiles
+processed together; reduce it if memory is limited. The logistic script accepts
+`--segmentation-checkpoint PATH` separately. Use `--help` to see all options.
 
 ## Training
 

@@ -20,4 +20,14 @@ From this directory, check downloaded files with:
 sha256sum -c SHA256SUMS
 ```
 
-Weights are distributed separately from the Git repository.
+The PyTorch weights are distributed separately from the Git repository.
+
+## Logistic-regression parameters
+
+[`logistic_regression.json`](logistic_regression.json) is included in the repository.
+It contains the ordered 30 feature names, training-set means and scales, logistic
+coefficients, intercept and fitting settings. It is used with `segmentation.pth`
+to classify predicted-mask descriptors; no additional weight download is needed.
+See [classification](../docs/classification.md) for feature definitions and the
+[logistic-regression notebook](../examples/classification_logistic_regression.ipynb)
+for an example.
